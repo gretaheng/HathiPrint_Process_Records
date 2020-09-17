@@ -7,7 +7,7 @@ The following three Python 3 scripts utilized several packages:
   - sys
   - traceback
 
-All packages except pandas should be Python standard library. Use pip install [package_name] to install or pip install [package_name] --upgrade to upgrade a package.
+All packages except pandas should be Python standard library. Use <b>pip install [package_name]</b> to install or <b>pip install [package_name] --upgrade</b> to upgrade a package.
 
 <br/>
 
