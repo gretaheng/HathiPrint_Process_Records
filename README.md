@@ -17,7 +17,7 @@ A Python script used for processing compressed single-part monographs Alma recor
 
 To run the script, download the Sinle-part_Monographs.py file (to file_path_4). We recommand you to save the python file and folders in the same folder so we could use relative path in the command line.
 In the command line, 
-### In the command line, run: python file_path_4/Sinle-part_Monographs.py folder_path_1 folder_path_2 folder_path_3
+### In the command line, run: python file_path_4/Single-part_Monographs.py folder_path_1 folder_path_2 folder_path_3
 <br/>
 
 ## HathiPrint_Process_Records_Multipart_Monographs
