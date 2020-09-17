@@ -7,7 +7,9 @@ The following three Python 3 scripts utilized several packages:
   - sys
   - traceback
 
+All packages except pandas should be Python standard library. Use pip install [package_name] to install or pip install [package_name] --upgrade to upgrade a package.
 
+<br/>
 
 ## HathiPrint_Process_Records_Single-part_Monographs
 
