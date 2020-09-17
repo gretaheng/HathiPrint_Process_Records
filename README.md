@@ -1,5 +1,5 @@
 ## Install Python Packages
-The following three Python 3 scripts utilize several packages:
+Several Python 3 packages are utilized:
   - tarfile
   - xml.etree.ElementTree as ET
   - pandas
