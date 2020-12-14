@@ -7,27 +7,33 @@ import sys
 
 def unzip_tar(zipfoldername, newfoldername):
 	temp = glob.glob(zipfoldername+ "/*.tar.gz")
-	old_path = zipfoldername + "\\"
-	new_path = zipfoldername + "/"
-	all_zip = [i.replace(old_path, new_path) for i in temp]
-	xml_name_list = []
-	for i in range(len(all_zip)):
-		name1 = all_zip[i]
-		name2 = all_zip[i].lstrip(new_path).rstrip(".tar.gz") + ".xml"
-		my_tar = tarfile.open(name1)
-		my_tar.extract(name2, newfoldername + "/")
-		my_tar.close()
-		xml_name_list.append(newfoldername + "/" + name2)
-	return xml_name_list
+	if len(temp)==0:
+		print("Compressed format is not .tar.gz")
+		sys.exit()
+	else:
+		old_path = zipfoldername + "\\"
+		new_path = zipfoldername + "/"
+		all_zip = [i.replace(old_path, new_path) for i in temp]
+		xml_name_list = []
+		for i in range(len(all_zip)):
+			name1 = all_zip[i]
+			name2 = all_zip[i].lstrip(new_path).rstrip(".tar.gz") + ".xml"
+			my_tar = tarfile.open(name1)
+			my_tar.extract(name2, newfoldername + "/")
+			my_tar.close()
+			xml_name_list.append(newfoldername + "/" + name2)
+		return xml_name_list
+
 
 def read_one_xml(file_name):
 	l = []
 	root = ET.parse(file_name).getroot()
 	for re in root.findall("./record"):
-		if re.findall("./datafield[@tag='035'].subfield[@code='a']") is not None:
+		if re.findall("./datafield[@tag='035'].subfield[@code='a']") is not None and re.findall(
+				"./datafield[@tag='977']") is not None:
 			for valid_re in re.findall("./datafield[@tag='035'].subfield[@code='a']"):
 				if valid_re.text:
-					if "(OCoLC)" in valid_re.text:
+					if "(OCoLC)o" in valid_re.text:
 						oclc = valid_re.text
 						mmsid = re.find("./controlfield[@tag='001']").text
 						gov = re.find("./datafield[@tag='086']")
@@ -38,6 +44,11 @@ def read_one_xml(file_name):
 
 						if re.findall("./datafield[@tag='977']") is not None:
 							for item in re.findall("./datafield[@tag='977']"):
+								if item.find("./subfield[@code='b']") is not None:
+									ser = item.find("./subfield[@code='b']").text.lower()
+								else:
+									ser = ""
+
 								if item.find("./subfield[@code='f']") is not None:
 									con_text = item.find("./subfield[@code='f']").text.lower()
 									if con_text and "damage" in con_text:
@@ -56,18 +67,18 @@ def read_one_xml(file_name):
 										sta = "CH"
 								else:
 									sta = "CH"
-								l_re = [oclc,mmsid,sta,con,gov_ind]
+								l_re = [oclc, mmsid, sta, con, ser, gov_ind]
 								l.append(l_re)
 	return l
 
 def read_all_files(xml_name_list, resultfoldername):
-	c_name = ["OCLC_Num","MMS_ID","Holding_Status", "Condition","Gov_ind"]
+	c_name = ["OCLC_Num","MMS_ID","Holding_Status", "Condition"," Item_Description", "Gov_ind"]
 	df = pd.DataFrame(columns = c_name)
 	for i in xml_name_list:
 		print('Now processing ' + i)
 		rv_d = read_one_xml(i)
 		df = df.append(pd.DataFrame(rv_d, columns = c_name))
-	df.to_csv(resultfoldername+ "/" + 'multipart_mono_results.txt', sep='\t', index=False, header=False)
+	df.to_csv(resultfoldername+ "/" + 'multi-part_mono_results.txt', sep='\t', index=False, header=False)
 	return
 
 def go(zipfoldername, newfoldername, resultfoldername):
