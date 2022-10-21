@@ -4,6 +4,7 @@ import traceback
 import pandas as pd
 import glob
 import sys
+import re
 
 def unzip_tar(zipfoldername, newfoldername):
 	temp = glob.glob(zipfoldername+ "/*.tar.gz")
@@ -63,10 +64,14 @@ def read_one_xml(file_name):
 def read_all_files(xml_name_list, resultfoldername):
 	c_name = ["OCLC_Num","MMS_ID","Holding_Status", "Condition","Gov_ind"]
 	df = pd.DataFrame(columns = c_name)
+	oclcl = []
 	for i in xml_name_list:
 		print('Now processing ' + i)
 		rv_d = read_one_xml(i)
-		df = df.append(pd.DataFrame(rv_d, columns = c_name))
+		oclcn = re.sub("[^0-9]", "", re_d[0]).lstrip('0')
+		if oclcn not in oclcl:
+			df = df.append(pd.DataFrame(rv_d, columns = c_name))
+			oclcl.append(oclcn)
 	df.to_csv(resultfoldername+ "/" + 'single_part_mono_results.txt', sep='\t', index=False, header=False)
 	return
 
